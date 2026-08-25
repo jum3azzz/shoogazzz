@@ -3,6 +3,102 @@
 // CHARACTER DATA
 // ============================================================
 
+// ------------------------------------------------------------
+// AVATAR MAPPING
+// ------------------------------------------------------------
+//
+// Portraits are generated on the fly via the free DiceBear
+// "avataaars" HTTP API. Each character's stored attributes are
+// translated into DiceBear query parameters so the portrait
+// matches gender presentation, hair, hair color, skin tone,
+// glasses, and facial hair described in the data below.
+//
+// Docs: https://www.dicebear.com/styles/avataaars/
+// ------------------------------------------------------------
+
+const DICEBEAR_BASE = "https://api.dicebear.com/9.x/avataaars/svg";
+
+const SKIN_TONE_MAP = {
+    "Fair": "ffdbb4",
+    "Medium Brown": "d08b5b",
+    "Dark Brown": "8d5524",
+};
+
+const HAIR_COLOR_MAP = {
+    "Black": "2c1b18",
+    "Light Blond": "e8c88e",
+    "None": "2c1b18",
+};
+
+function maleHairTop(hair) {
+    if (hair === "Bald") return "NoHair";
+    if (hair === "Short") return "ShortHairShortFlat";
+    return "ShortHairShortFlat";
+}
+
+function femaleHairTop(hair) {
+    if (hair === "Long") return "LongHairStraight";
+    if (hair === "Short") return "LongHairBob";
+    return "LongHairStraight";
+}
+
+function facialHairType(facialHair) {
+    switch (facialHair) {
+        case "Beard":
+        case "Full Beard":
+            return "BeardMajestic";
+        case "Mustache":
+            return "BeardLight";
+        case "Goatee":
+        case "Mustache + Goatee":
+            return "BeardLight";
+        case "Short Beard":
+            return "BeardLight";
+        default:
+            return "Blank";
+    }
+}
+
+function accessoryType(accessories) {
+    if (accessories === "Glasses") return "Prescription02";
+    return "Blank";
+}
+
+/**
+ * Build a DiceBear avataaars portrait URL for a character,
+ * derived deterministically from their stored attributes so
+ * the same character always renders the same portrait.
+ */
+export function getCharacterAvatarUrl(character) {
+    const isFemale = character.gender === "Female";
+
+    const topType =
+        character.hair === "Bald"
+            ? "NoHair"
+            : isFemale
+            ? femaleHairTop(character.hair)
+            : maleHairTop(character.hair);
+
+    const skinColor =
+        SKIN_TONE_MAP[character.skinTone] || "d08b5b";
+
+    const hairColor =
+        HAIR_COLOR_MAP[character.hairColor] || "2c1b18";
+
+    const params = new URLSearchParams({
+        seed: character.name,
+        top: topType,
+        hairColor: hairColor,
+        skinColor: skinColor,
+        facialHairType: facialHairType(character.facialHair),
+        accessoriesType: accessoryType(character.accessories),
+        clothesType: isFemale ? "BlazerSweater" : "Hoodie",
+        backgroundColor: "b6e3f4,c0aede,d1d4f9",
+    });
+
+    return `${DICEBEAR_BASE}?${params.toString()}`;
+}
+
 export const characters = [
 
     {

@@ -9,6 +9,7 @@ import {
   getCategoryValues,
   getCharacterById,
   getCharacterByName,
+  getCharacterAvatarUrl,
 } from "./characters.js";
 
 // ============================================================
@@ -526,21 +527,15 @@ function createCharacterCard(character) {
     card.classList.add("eliminated");
   }
 
-  /*
-   * IMAGE PLACEHOLDER
-   *
-   * Later we can replace this with:
-   *
-   * /assets/characters/idris.png
-   *
-   * or your actual artwork paths.
-   */
-
-  const image = document.createElement("div");
+  const image = document.createElement("img");
 
   image.className = "character-portrait";
 
-  image.setAttribute("aria-label", `${character.name} portrait`);
+  image.src = getCharacterAvatarUrl(character);
+
+  image.alt = `${character.name} portrait`;
+
+  image.loading = "lazy";
 
   const name = document.createElement("span");
 
@@ -826,7 +821,23 @@ function renderGuessOptions() {
 
     button.className = "guess-option";
 
-    button.textContent = character.name;
+    const thumb = document.createElement("img");
+
+    thumb.className = "guess-option-portrait";
+
+    thumb.src = getCharacterAvatarUrl(character);
+
+    thumb.alt = "";
+
+    thumb.loading = "lazy";
+
+    const label = document.createElement("span");
+
+    label.textContent = character.name;
+
+    button.appendChild(thumb);
+
+    button.appendChild(label);
 
     button.addEventListener("click", () => handleGuess(character.id));
 
@@ -887,21 +898,23 @@ function showResult(won, guessedCharacter) {
 
   elements.resultCharacter.innerHTML = "";
 
-  const characterName = document.createElement("div");
+  const portrait = document.createElement("img");
 
-  characterName.textContent = guessedCharacter.name;
+  portrait.className = "result-character-portrait";
 
-  characterName.style.display = "grid";
+  portrait.src = getCharacterAvatarUrl(guessedCharacter);
 
-  characterName.style.placeItems = "center";
+  portrait.alt = `${guessedCharacter.name} portrait`;
 
-  characterName.style.height = "100%";
+  const nameLabel = document.createElement("span");
 
-  characterName.style.color = "var(--cream)";
+  nameLabel.className = "result-character-name";
 
-  characterName.style.fontWeight = "900";
+  nameLabel.textContent = guessedCharacter.name;
 
-  elements.resultCharacter.appendChild(characterName);
+  elements.resultCharacter.appendChild(portrait);
+
+  elements.resultCharacter.appendChild(nameLabel);
 
   showResultScreen();
 }

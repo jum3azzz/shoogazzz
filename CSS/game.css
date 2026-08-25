@@ -7,14 +7,6 @@
   flex-direction: column;
 
   min-height: 100vh;
-
-  background:
-    radial-gradient(
-      circle at 5% 5%,
-      rgba(201, 111, 74, 0.045),
-      transparent 25%
-    ),
-    var(--bg);
 }
 
 /* =========================================================
@@ -31,16 +23,20 @@
   align-items: center;
   justify-content: space-between;
 
-  min-height: 82px;
+  min-height: 84px;
 
-  padding: 0 clamp(20px, 4vw, 52px);
+  margin: 16px;
+  padding: 0 clamp(20px, 4vw, 40px);
 
-  border-bottom: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-medium);
 
-  background: rgba(23, 21, 20, 0.92);
+  background: var(--glass);
 
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow: var(--shadow-pop-sm);
 }
 
 .game-brand {
@@ -48,12 +44,13 @@
   align-items: center;
   gap: 10px;
 
-  color: var(--cream);
+  color: var(--navy);
 
-  font-size: 0.72rem;
-  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
 
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
 }
 
 .players-status {
@@ -67,9 +64,9 @@
   display: flex;
   align-items: center;
 
-  gap: 9px;
+  gap: 10px;
 
-  opacity: 0.42;
+  opacity: 0.48;
 
   transition: opacity var(--transition);
 }
@@ -79,20 +76,22 @@
 }
 
 .player-status-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 
   flex: 0 0 auto;
 
   border-radius: 50%;
 
-  background: var(--cream-muted);
+  background: var(--ink-muted);
 }
 
 .active-player .player-status-dot {
-  background: var(--terracotta);
+  background: var(--cyan);
 
-  box-shadow: 0 0 0 5px rgba(201, 111, 74, 0.08);
+  box-shadow:
+    0 0 0 5px rgba(111, 168, 118, 0.2),
+    0 0 12px rgba(111, 168, 118, 0.4);
 }
 
 .player-status-info {
@@ -103,16 +102,17 @@
 }
 
 .player-status-info strong {
-  color: var(--cream);
+  color: var(--navy);
 
-  font-size: 0.76rem;
-  font-weight: 850;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .player-status-info span {
-  color: var(--cream-muted);
+  color: var(--ink-muted);
 
-  font-size: 0.57rem;
+  font-size: 0.58rem;
   font-weight: 800;
 
   letter-spacing: 0.1em;
@@ -127,7 +127,7 @@
 
   margin: 0 auto;
 
-  padding: 35px clamp(20px, 4vw, 52px) 45px;
+  padding: 6px clamp(20px, 4vw, 40px) 45px;
 }
 
 /* =========================================================
@@ -147,27 +147,30 @@
 }
 
 .section-heading h2 {
-  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
 
-  letter-spacing: -0.04em;
+  letter-spacing: -0.01em;
 }
 
 .remaining-count {
-  padding: 8px 11px;
+  padding: 9px 14px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 10px;
+  border-radius: 999px;
 
-  color: var(--cream-muted);
-  background: var(--surface);
+  color: var(--ink);
+  background: var(--glass);
 
-  font-size: 0.58rem;
-  font-weight: 900;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
-  letter-spacing: 0.1em;
+  font-size: 0.6rem;
+  font-weight: 800;
 
-  box-shadow: var(--shadow-inner);
+  letter-spacing: 0.08em;
+
+  box-shadow: var(--shadow-pop-sm);
 }
 
 /* =========================================================
@@ -176,12 +179,24 @@
 
 .character-section {
   margin-bottom: 34px;
+
+  padding: 22px;
+
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-large);
+
+  background: var(--glass-soft);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow: var(--shadow-pop-sm);
 }
 
 .character-board {
   display: grid;
 
-  grid-template-columns: repeat(6, minmax(110px, 1fr));
+  grid-template-columns: repeat(7, minmax(100px, 1fr));
 
   gap: 13px;
 }
@@ -193,25 +208,26 @@
 .character-card {
   position: relative;
 
-  aspect-ratio: 0.82;
+  aspect-ratio: 0.85;
 
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: flex-start;
 
   min-width: 0;
 
-  border: 1px solid var(--border);
+  padding: 14px 8px 10px;
+
+  border: 1px solid var(--glass-border);
 
   border-radius: 20px;
 
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.55);
 
-  box-shadow:
-    7px 7px 14px rgba(0, 0, 0, 0.25),
-    var(--shadow-inner);
+  box-shadow: var(--shadow-pop-sm);
 
   cursor: pointer;
 
@@ -225,9 +241,7 @@
 .character-card:hover {
   transform: translateY(-4px);
 
-  box-shadow:
-    10px 12px 20px rgba(0, 0, 0, 0.3),
-    var(--shadow-inner);
+  box-shadow: var(--shadow-pop);
 }
 
 .character-card:active {
@@ -239,40 +253,23 @@
 ========================================================= */
 
 .character-portrait {
-  position: absolute;
-  inset: 0;
+  width: 68%;
 
-  width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
+
+  border-radius: 50%;
 
   object-fit: cover;
 
-  background: var(--surface-light);
+  background: rgba(255, 255, 255, 0.6);
 
-  transition:
-    transform 300ms ease,
-    filter 300ms ease;
+  box-shadow: var(--shadow-inset);
+
+  transition: transform 300ms ease;
 }
 
 .character-card:hover .character-portrait {
-  transform: scale(1.025);
-}
-
-/* =========================================================
-   CHARACTER GRADIENT
-========================================================= */
-
-.character-card::after {
-  content: "";
-
-  position: absolute;
-  inset: 35% 0 0;
-
-  z-index: 1;
-
-  pointer-events: none;
-
-  background: linear-gradient(to bottom, transparent, rgba(10, 9, 8, 0.85));
+  transform: scale(1.05);
 }
 
 /* =========================================================
@@ -280,22 +277,18 @@
 ========================================================= */
 
 .character-name {
-  position: relative;
+  margin-top: 10px;
 
-  z-index: 2;
+  color: var(--navy);
 
-  padding: 14px;
+  font-size: 0.68rem;
+  font-weight: 800;
 
-  color: var(--cream);
-
-  font-size: 0.7rem;
-  font-weight: 900;
-
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
 
   text-transform: uppercase;
 
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+  text-align: center;
 }
 
 /* =========================================================
@@ -307,13 +300,11 @@
 
   cursor: default;
 
-  filter: saturate(0.25);
+  filter: saturate(0.2);
 
-  opacity: 0.62;
+  opacity: 0.55;
 
-  box-shadow:
-    inset 4px 4px 10px rgba(0, 0, 0, 0.24),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.015);
+  box-shadow: var(--shadow-inset);
 }
 
 .character-card.eliminated:hover {
@@ -321,37 +312,11 @@
 }
 
 .character-card.eliminated .character-portrait {
-  filter: grayscale(1) brightness(0.38);
+  filter: grayscale(1) brightness(0.85);
 }
 
 .character-card.eliminated .character-name {
-  color: #80766b;
-}
-
-/* =========================================================
-   ELIMINATION SILHOUETTE
-========================================================= */
-
-.character-card.eliminated::before {
-  content: "";
-
-  position: absolute;
-
-  z-index: 3;
-
-  top: 50%;
-  left: 50%;
-
-  width: 38px;
-  height: 38px;
-
-  transform: translate(-50%, -65%);
-
-  border-radius: 50% 50% 42% 42%;
-
-  background: rgba(244, 233, 216, 0.14);
-
-  box-shadow: 0 20px 0 8px rgba(244, 233, 216, 0.06);
+  color: var(--ink-muted);
 }
 
 /* =========================================================
@@ -381,21 +346,28 @@
 ========================================================= */
 
 .question-section {
-  padding: 25px;
+  padding: 26px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 25px;
+  border-radius: var(--radius-large);
 
-  background: var(--surface);
+  background: var(--glass-soft);
 
-  box-shadow:
-    12px 12px 25px rgba(0, 0, 0, 0.25),
-    var(--shadow-inner);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow: var(--shadow-pop-sm);
 }
 
 .question-heading {
   margin-bottom: 19px;
+  justify-content: center;
+  text-align: center;
+}
+
+.question-heading > div {
+  width: 100%;
 }
 
 /* =========================================================
@@ -407,7 +379,7 @@
 
   grid-template-columns: repeat(4, minmax(0, 1fr));
 
-  gap: 11px;
+  gap: 12px;
 }
 
 .question-button {
@@ -417,25 +389,24 @@
 
   gap: 9px;
 
-  min-height: 54px;
+  min-height: 56px;
 
-  padding: 0 13px;
+  padding: 0 14px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 15px;
+  border-radius: 999px;
 
-  color: var(--cream-muted);
-  background: var(--surface-light);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.5);
 
-  font-size: 0.67rem;
-  font-weight: 850;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
 
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
 
-  box-shadow:
-    5px 5px 11px rgba(0, 0, 0, 0.24),
-    var(--shadow-inner);
+  box-shadow: var(--shadow-pop-sm);
 
   transition:
     transform var(--transition),
@@ -446,32 +417,35 @@
 }
 
 .question-button:hover {
-  color: var(--cream);
+  color: var(--navy);
 
-  border-color: rgba(201, 111, 74, 0.24);
+  border-color: rgba(255, 255, 255, 0.9);
 
   transform: translateY(-2px);
 }
 
 .question-button:active,
 .question-button.selected {
-  color: var(--cream);
+  color: #fff;
 
-  background: var(--surface-dark);
+  background: linear-gradient(180deg, var(--cyan) 0%, var(--cyan-dark) 100%);
 
-  border-color: rgba(201, 111, 74, 0.42);
+  border-color: transparent;
 
-  transform: translateY(2px);
+  transform: translateY(1px);
 
-  box-shadow:
-    inset 4px 4px 9px rgba(0, 0, 0, 0.24),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.018);
+  box-shadow: var(--shadow-inset);
 }
 
 .question-icon {
-  color: var(--terracotta);
+  color: var(--coral);
 
-  font-size: 0.95rem;
+  font-size: 1rem;
+}
+
+.question-button.selected .question-icon,
+.question-button:active .question-icon {
+  color: #fff;
 }
 
 /* =========================================================
@@ -481,17 +455,15 @@
 .answer-panel {
   margin-top: 16px;
 
-  padding: 17px;
+  padding: 18px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 18px;
+  border-radius: var(--radius-medium);
 
-  background: var(--surface-dark);
+  background: rgba(255, 255, 255, 0.4);
 
-  box-shadow:
-    inset 3px 3px 8px rgba(0, 0, 0, 0.22),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.02);
+  box-shadow: var(--shadow-inset);
 
   animation: answer-enter 220ms ease both;
 }
@@ -515,31 +487,34 @@
 
   margin-bottom: 13px;
 
-  color: var(--cream);
+  color: var(--navy);
 
-  font-size: 0.7rem;
-  font-weight: 850;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
 
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
 }
 
 .close-button {
   display: grid;
   place-items: center;
 
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
 
-  border-radius: 9px;
+  border-radius: 50%;
 
-  color: var(--cream-muted);
-  background: var(--surface-light);
+  color: var(--ink-muted);
+  background: rgba(255, 255, 255, 0.55);
 
   font-size: 1rem;
+
+  box-shadow: var(--shadow-pop-sm);
 }
 
 .close-button:hover {
-  color: var(--cream);
+  color: var(--navy);
 }
 
 .answer-options {
@@ -550,19 +525,19 @@
 }
 
 .answer-option {
-  min-height: 39px;
+  min-height: 40px;
 
-  padding: 0 13px;
+  padding: 0 14px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 11px;
+  border-radius: 999px;
 
-  color: var(--cream-muted);
-  background: var(--surface);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.55);
 
-  font-size: 0.67rem;
-  font-weight: 750;
+  font-size: 0.7rem;
+  font-weight: 700;
 
   transition:
     background var(--transition),
@@ -571,8 +546,8 @@
 }
 
 .answer-option:hover {
-  color: var(--cream);
-  background: var(--surface-light);
+  color: var(--navy);
+  background: #fff;
 
   transform: translateY(-1px);
 }
@@ -592,11 +567,11 @@
 
   gap: 12px;
 
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .guess-button {
-  min-width: 190px;
+  min-width: 200px;
 }
 
 /* =========================================================
@@ -608,9 +583,9 @@
 
   grid-template-columns: repeat(4, 1fr);
 
-  gap: 9px;
+  gap: 10px;
 
-  max-height: 400px;
+  max-height: 420px;
 
   margin-top: 24px;
 
@@ -618,30 +593,49 @@
 }
 
 .guess-option {
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  border: 1px solid var(--border);
+  gap: 8px;
 
-  border-radius: 14px;
+  padding: 14px 8px;
 
-  color: var(--cream-muted);
-  background: var(--surface-light);
+  border: 1px solid var(--glass-border);
 
-  text-align: left;
+  border-radius: var(--radius-medium);
 
-  font-size: 0.65rem;
-  font-weight: 800;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.5);
+
+  text-align: center;
+
+  font-size: 0.68rem;
+  font-weight: 700;
 
   transition:
     transform var(--transition),
     color var(--transition),
-    border-color var(--transition);
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.guess-option-portrait {
+  width: 52px;
+  height: 52px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.6);
+
+  box-shadow: var(--shadow-inset);
 }
 
 .guess-option:hover {
-  color: var(--cream);
+  color: var(--navy);
+  background: #fff;
 
-  border-color: rgba(201, 111, 74, 0.3);
+  border-color: rgba(255, 255, 255, 0.95);
 
   transform: translateY(-2px);
 }
@@ -666,11 +660,11 @@
 
 @media (max-width: 800px) {
   .game-header {
-    min-height: 72px;
+    min-height: 74px;
   }
 
   .game-brand {
-    font-size: 0.62rem;
+    font-size: 0.66rem;
   }
 
   .players-status {
@@ -709,7 +703,8 @@
 
     gap: 15px;
 
-    padding: 18px 18px 15px;
+    margin: 10px;
+    padding: 18px;
   }
 
   .players-status {
@@ -717,7 +712,7 @@
   }
 
   .game-content {
-    padding: 22px 15px 30px;
+    padding: 16px 12px 30px;
   }
 
   .section-heading {
@@ -725,7 +720,7 @@
   }
 
   .remaining-count {
-    font-size: 0.52rem;
+    font-size: 0.54rem;
   }
 
   .character-board {
@@ -739,9 +734,7 @@
   }
 
   .character-name {
-    padding: 9px;
-
-    font-size: 0.58rem;
+    font-size: 0.6rem;
   }
 
   .question-buttons {
@@ -751,7 +744,7 @@
   .question-button {
     min-height: 50px;
 
-    font-size: 0.6rem;
+    font-size: 0.62rem;
   }
 
   .game-actions {
@@ -789,6 +782,6 @@
   }
 
   .player-status-info strong {
-    font-size: 0.68rem;
+    font-size: 0.7rem;
   }
 }

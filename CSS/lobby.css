@@ -18,25 +18,23 @@
 ========================================================= */
 
 .lobby-card {
-  width: min(500px, 100%);
+  width: min(480px, 100%);
 
   display: flex;
   flex-direction: column;
 
-  padding: 42px;
+  padding: 44px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 32px;
+  border-radius: var(--radius-large);
 
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 45%),
-    var(--surface);
+  background: var(--glass);
 
-  box-shadow:
-    18px 18px 45px rgba(0, 0, 0, 0.36),
-    -4px -4px 14px rgba(255, 255, 255, 0.015),
-    var(--shadow-inner);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  box-shadow: var(--shadow-pop);
 
   animation: lobby-enter 500ms ease both;
 }
@@ -54,7 +52,7 @@
 }
 
 .lobby-card > .brand-mark {
-  margin-bottom: 54px;
+  margin-bottom: 48px;
 }
 
 /* =========================================================
@@ -70,9 +68,9 @@
 }
 
 .lobby-heading h1 {
-  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-size: clamp(1.9rem, 6vw, 2.9rem);
 
-  letter-spacing: -0.055em;
+  letter-spacing: -0.01em;
 }
 
 .lobby-heading p {
@@ -80,7 +78,7 @@
 
   margin-top: 14px;
 
-  font-size: 0.88rem;
+  font-size: 0.9rem;
 }
 
 /* =========================================================
@@ -95,34 +93,33 @@
 }
 
 .game-form label {
-  color: var(--cream-muted);
+  color: var(--ink-muted);
 
-  font-size: 0.67rem;
+  font-size: 0.68rem;
   font-weight: 800;
 
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
 }
 
 .game-form input {
   width: 100%;
   height: 58px;
 
-  padding: 0 18px;
+  padding: 0 20px;
 
-  border: 1px solid var(--border);
-  border-radius: 17px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
 
   outline: none;
 
-  color: var(--cream);
-  background: var(--surface-dark);
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.55);
 
-  box-shadow:
-    inset 3px 3px 8px rgba(0, 0, 0, 0.24),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.025);
+  box-shadow: var(--shadow-inset);
 
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-align: center;
 
   transition:
     border-color var(--transition),
@@ -130,19 +127,21 @@
 }
 
 .game-form input::placeholder {
-  color: #71685e;
+  color: rgba(22, 50, 79, 0.4);
+
+  font-weight: 500;
 }
 
 .game-form input:focus {
-  border-color: rgba(201, 111, 74, 0.55);
+  border-color: var(--cyan);
 
   box-shadow:
-    0 0 0 3px rgba(201, 111, 74, 0.08),
-    inset 3px 3px 8px rgba(0, 0, 0, 0.24);
+    0 0 0 4px rgba(111, 168, 118, 0.2),
+    var(--shadow-inset);
 }
 
 .game-form .primary-button {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 /* =========================================================
@@ -153,35 +152,33 @@
   display: flex;
   flex-direction: column;
 
-  gap: 13px;
+  gap: 14px;
 }
 
 .mode-button {
   display: grid;
 
-  grid-template-columns: 48px 1fr 28px;
+  grid-template-columns: 50px 1fr 26px;
 
   align-items: center;
 
-  gap: 14px;
+  gap: 15px;
 
   width: 100%;
-  min-height: 84px;
+  min-height: 88px;
 
-  padding: 14px 17px;
+  padding: 15px 18px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 20px;
+  border-radius: var(--radius-medium);
 
-  color: var(--cream);
-  background: var(--surface-light);
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.42);
 
   text-align: left;
 
-  box-shadow:
-    7px 7px 15px rgba(0, 0, 0, 0.25),
-    var(--shadow-inner);
+  box-shadow: var(--shadow-pop-sm);
 
   transition:
     transform var(--transition),
@@ -192,35 +189,33 @@
 .mode-button:hover {
   transform: translateY(-2px);
 
-  border-color: rgba(201, 111, 74, 0.25);
+  border-color: rgba(255, 255, 255, 0.9);
 
-  background: #312b28;
+  background: rgba(255, 255, 255, 0.58);
 }
 
 .mode-button:active {
   transform: translateY(2px);
 
-  box-shadow:
-    2px 2px 7px rgba(0, 0, 0, 0.3),
-    inset 3px 3px 7px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-inset);
 }
 
 .mode-icon {
   display: grid;
   place-items: center;
 
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
 
-  border-radius: 15px;
+  border-radius: 16px;
 
-  color: var(--terracotta);
-  background: var(--surface);
+  color: #fff;
+  background: linear-gradient(180deg, var(--cyan) 0%, var(--cyan-dark) 100%);
 
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 500;
 
-  box-shadow: var(--shadow-inner);
+  box-shadow: var(--shadow-pop-sm);
 }
 
 .mode-content {
@@ -231,21 +226,22 @@
 }
 
 .mode-content strong {
-  font-size: 0.78rem;
-  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
 
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
 }
 
 .mode-content small {
-  color: var(--cream-muted);
+  color: var(--ink-muted);
 
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   line-height: 1.45;
 }
 
 .mode-arrow {
-  color: var(--cream-muted);
+  color: var(--ink-muted);
 
   font-size: 1.1rem;
 
@@ -255,7 +251,7 @@
 }
 
 .mode-button:hover .mode-arrow {
-  color: var(--terracotta);
+  color: var(--cyan-dark);
   transform: translateX(3px);
 }
 
@@ -280,10 +276,12 @@
 .form-error {
   margin-top: 12px;
 
-  color: #d77b7b;
+  color: var(--red);
 
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 700;
+
+  text-align: center;
 }
 
 /* =========================================================
@@ -304,45 +302,44 @@
 }
 
 .waiting-card .lobby-heading h1 {
-  font-size: clamp(1.7rem, 5vw, 2.6rem);
+  font-size: clamp(1.6rem, 5vw, 2.3rem);
 }
 
 .game-code-container {
   width: 100%;
 
-  padding: 25px;
+  padding: 26px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 22px;
+  border-radius: var(--radius-medium);
 
-  background: var(--surface-dark);
+  background: rgba(255, 255, 255, 0.35);
 
-  box-shadow:
-    inset 4px 4px 10px rgba(0, 0, 0, 0.24),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.025);
+  box-shadow: var(--shadow-inset);
 }
 
 .game-code-label {
   display: block;
 
-  color: var(--cream-muted);
+  color: var(--ink-muted);
 
-  font-size: 0.62rem;
-  font-weight: 900;
+  font-size: 0.64rem;
+  font-weight: 800;
 
   letter-spacing: 0.18em;
 }
 
 .game-code {
-  margin: 11px 0 18px;
+  margin: 12px 0 18px;
 
-  color: var(--cream);
+  color: var(--navy);
 
-  font-size: clamp(2rem, 8vw, 3.2rem);
-  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 700;
 
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
 
   line-height: 1;
 }
@@ -354,21 +351,21 @@
 
   margin: 25px 0;
 
-  color: var(--cream-muted);
+  color: var(--ink-muted);
 
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
 .status-indicator {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
 
   border-radius: 50%;
 
   background: var(--yellow);
 
-  box-shadow: 0 0 0 5px rgba(217, 164, 65, 0.08);
+  box-shadow: 0 0 0 5px rgba(240, 180, 41, 0.2);
 
   animation: waiting-pulse 1.6s ease-in-out infinite;
 }
@@ -391,55 +388,54 @@
 ========================================================= */
 
 .result-card {
-  width: min(500px, 100%);
+  width: min(480px, 100%);
 
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  padding: 46px 38px;
+  padding: 48px 38px;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 32px;
+  border-radius: var(--radius-large);
 
-  background: var(--surface);
+  background: var(--glass);
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 
   text-align: center;
 
-  box-shadow:
-    18px 18px 45px rgba(0, 0, 0, 0.36),
-    var(--shadow-inner);
+  box-shadow: var(--shadow-pop);
 }
 
 .result-symbol {
   display: grid;
   place-items: center;
 
-  width: 74px;
-  height: 74px;
+  width: 76px;
+  height: 76px;
 
   margin-bottom: 25px;
 
-  border-radius: 24px;
+  border-radius: 26px;
 
-  color: var(--cream);
-  background: var(--terracotta);
+  color: #fff;
+  background: linear-gradient(180deg, var(--cyan) 0%, var(--cyan-dark) 100%);
 
-  font-size: 2rem;
+  font-size: 2.1rem;
   font-weight: 900;
 
-  box-shadow:
-    8px 8px 16px rgba(0, 0, 0, 0.3),
-    var(--shadow-inner);
+  box-shadow: var(--shadow-pop);
 }
 
 .result-card h1 {
   margin-top: 10px;
 
-  font-size: clamp(2rem, 7vw, 3.4rem);
+  font-size: clamp(2rem, 7vw, 3rem);
 
-  letter-spacing: -0.05em;
+  letter-spacing: -0.01em;
 }
 
 .result-card > p {
@@ -447,16 +443,42 @@
 }
 
 .result-character {
-  width: 130px;
-  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  margin: 25px 0;
+  gap: 10px;
 
-  border-radius: 22px;
+  width: 150px;
 
-  background: var(--surface-light);
+  margin: 26px 0;
 
-  box-shadow: var(--shadow-inner);
+  padding: 14px;
+
+  border-radius: var(--radius-medium);
+
+  background: rgba(255, 255, 255, 0.35);
+
+  box-shadow: var(--shadow-inset);
+}
+
+.result-character-portrait {
+  width: 96px;
+  height: 96px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.5);
+
+  box-shadow: var(--shadow-pop-sm);
+}
+
+.result-character-name {
+  color: var(--navy);
+
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .result-actions {
@@ -486,7 +508,7 @@
   }
 
   .lobby-card {
-    padding: 28px 22px;
+    padding: 30px 24px;
     border-radius: 25px;
   }
 
@@ -495,16 +517,16 @@
   }
 
   .lobby-heading h1 {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
 
   .mode-button {
-    grid-template-columns: 42px 1fr 20px;
-    min-height: 76px;
+    grid-template-columns: 44px 1fr 20px;
+    min-height: 78px;
   }
 
   .mode-icon {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
   }
 }
