@@ -40,17 +40,17 @@ import {
 // ============================================================
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyAGELUMNKKKe8b2wYG_XYSweSMwnA4FN60",
 
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  authDomain: "guess-the-person-91ed1.firebaseapp.com",
 
-  projectId: "YOUR_PROJECT_ID",
+  projectId: "guess-the-person-91ed1",
 
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+  storageBucket: "guess-the-person-91ed1.firebasestorage.app",
 
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  messagingSenderId: "898776254744",
 
-  appId: "YOUR_APP_ID",
+  appId: "1:898776254744:web:6de0686393a3cb7e68b66d",
 };
 
 // ============================================================
