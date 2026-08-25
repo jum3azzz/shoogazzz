@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Shoogazzz, a two-player character guessing game."
+    />
+
+    <title>Shoogazzz | Guess the Person</title>
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/lobby.css" />
+    <link rel="stylesheet" href="./css/game.css" />
+  </head>
+
+  <body>
+    <!-- =====================================================
+         APPLICATION
+    ====================================================== -->
+
+    <div id="app">
+      <!-- =================================================
+             NAME SCREEN
+        ================================================== -->
+
+      <main id="name-screen" class="screen active-screen">
+        <section class="lobby-card">
+          <div class="brand-mark">
+            <span class="brand-dot"></span>
+            <span>SHOOGAZZZ</span>
+          </div>
+
+          <div class="lobby-heading">
+            <span class="eyebrow"> TWO PLAYER GAME </span>
+
+            <h1>GUESS THE PERSON</h1>
+
+            <p>Enter your name to start playing.</p>
+          </div>
+
+          <form id="name-form" class="game-form">
+            <label for="player-name"> YOUR NAME </label>
+
+            <input
+              type="text"
+              id="player-name"
+              name="player-name"
+              placeholder="Enter your name"
+              maxlength="20"
+              autocomplete="off"
+              required
+            />
+
+            <button type="submit" class="primary-button">CONTINUE</button>
+          </form>
+        </section>
+      </main>
+
+      <!-- =================================================
+             CREATE / JOIN SCREEN
+        ================================================== -->
+
+      <main id="mode-screen" class="screen" hidden>
+        <section class="lobby-card mode-card">
+          <div class="brand-mark">
+            <span class="brand-dot"></span>
+            <span>SHOOGAZZZ</span>
+          </div>
+
+          <div class="lobby-heading">
+            <span class="eyebrow"> WELCOME </span>
+
+            <h1 id="welcome-name">HELLO, G</h1>
+
+            <p>Choose how you want to play.</p>
+          </div>
+
+          <div class="mode-options">
+            <!-- CREATE GAME -->
+
+            <button type="button" id="create-game-button" class="mode-button">
+              <span class="mode-icon"> + </span>
+
+              <span class="mode-content">
+                <strong> CREATE GAME </strong>
+
+                <small> Start a new game and invite a friend. </small>
+              </span>
+
+              <span class="mode-arrow"> → </span>
+            </button>
+
+            <!-- JOIN GAME -->
+
+            <button type="button" id="show-join-button" class="mode-button">
+              <span class="mode-icon"> ↗ </span>
+
+              <span class="mode-content">
+                <strong> JOIN GAME </strong>
+
+                <small> Enter a game code from your friend. </small>
+              </span>
+
+              <span class="mode-arrow"> → </span>
+            </button>
+          </div>
+
+          <button type="button" id="change-name-button" class="text-button">
+            Change name
+          </button>
+        </section>
+      </main>
+
+      <!-- =================================================
+             JOIN GAME SCREEN
+        ================================================== -->
+
+      <main id="join-screen" class="screen" hidden>
+        <section class="lobby-card">
+          <button type="button" id="back-to-mode-button" class="back-button">
+            ← Back
+          </button>
+
+          <div class="lobby-heading">
+            <span class="eyebrow"> JOIN A GAME </span>
+
+            <h1>ENTER GAME CODE</h1>
+
+            <p>Enter the code shared by your opponent.</p>
+          </div>
+
+          <form id="join-form" class="game-form">
+            <label for="join-code"> GAME CODE </label>
+
+            <input
+              type="text"
+              id="join-code"
+              name="join-code"
+              placeholder="ABC729"
+              maxlength="6"
+              autocomplete="off"
+              spellcheck="false"
+              required
+            />
+
+            <button type="submit" class="primary-button">JOIN GAME</button>
+          </form>
+
+          <p id="join-error" class="form-error" hidden></p>
+        </section>
+      </main>
+
+      <!-- =================================================
+             WAITING ROOM
+        ================================================== -->
+
+      <main id="waiting-screen" class="screen" hidden>
+        <section class="lobby-card waiting-card">
+          <div class="brand-mark">
+            <span class="brand-dot"></span>
+            <span>SHOOGAZZZ</span>
+          </div>
+
+          <div class="lobby-heading">
+            <span class="eyebrow"> GAME CREATED </span>
+
+            <h1>WAITING FOR YOUR OPPONENT</h1>
+
+            <p>Share this game code with your friend.</p>
+          </div>
+
+          <div class="game-code-container">
+            <span class="game-code-label"> GAME CODE </span>
+
+            <div id="game-code" class="game-code">------</div>
+
+            <button
+              type="button"
+              id="copy-code-button"
+              class="secondary-button"
+            >
+              COPY CODE
+            </button>
+          </div>
+
+          <div class="waiting-status">
+            <span class="status-indicator"></span>
+
+            <span> Waiting for opponent... </span>
+          </div>
+
+          <button type="button" id="cancel-game-button" class="text-button">
+            Cancel game
+          </button>
+        </section>
+      </main>
+
+      <!-- =================================================
+             MAIN GAME SCREEN
+        ================================================== -->
+
+      <main id="game-screen" class="screen game-screen" hidden>
+        <!-- GAME HEADER -->
+
+        <header class="game-header">
+          <div class="game-brand">
+            <span class="brand-dot"></span>
+
+            <span> GUESS THE PERSON </span>
+          </div>
+
+          <div class="players-status">
+            <!-- LOCAL PLAYER -->
+
+            <div id="local-player-status" class="player-status active-player">
+              <div class="player-status-dot"></div>
+
+              <div class="player-status-info">
+                <strong id="local-player-name"> G </strong>
+
+                <span id="local-player-turn"> YOUR TURN </span>
+              </div>
+            </div>
+
+            <!-- OPPONENT -->
+
+            <div id="opponent-player-status" class="player-status">
+              <div class="player-status-dot"></div>
+
+              <div class="player-status-info">
+                <strong id="opponent-player-name"> Waiting </strong>
+
+                <span id="opponent-player-turn"> WAITING </span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- GAME CONTENT -->
+
+        <div class="game-content">
+          <!-- =========================================
+                     CHARACTER BOARD
+                ========================================== -->
+
+          <section
+            class="character-section"
+            aria-labelledby="character-board-title"
+          >
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow"> YOUR BOARD </span>
+
+                <h2 id="character-board-title">CHARACTER BOARD</h2>
+              </div>
+
+              <div id="remaining-count" class="remaining-count">
+                31 REMAINING
+              </div>
+            </div>
+
+            <div id="character-board" class="character-board">
+              <!-- Character cards are generated by JavaScript -->
+            </div>
+          </section>
+
+          <!-- =========================================
+                     QUESTION PANEL
+                ========================================== -->
+
+          <section class="question-section" aria-labelledby="question-title">
+            <div class="section-heading question-heading">
+              <div>
+                <span class="eyebrow"> ASK A QUESTION </span>
+
+                <h2 id="question-title">ASK</h2>
+              </div>
+            </div>
+
+            <div id="question-buttons" class="question-buttons">
+              <!-- GENDER -->
+
+              <button
+                type="button"
+                class="question-button"
+                data-category="gender"
+              >
+                <span class="question-icon"> ♀ </span>
+
+                <span> GENDER </span>
+              </button>
+
+              <!-- EYES -->
+
+              <button
+                type="button"
+                class="question-button"
+                data-category="eyeColor"
+              >
+                <span class="question-icon"> ◉ </span>
+
+                <span> EYES </span>
+              </button>
+
+              <!-- HAIR -->
+
+              <button
+                type="button"
+                class="question-button"
+                data-category="hair"
+              >
+                <span class="question-icon"> ✂ </span>
+
+                <span> HAIR </span>
+              </button>
+
+              <!-- HAIR COLOR -->
+
+              <button
+                type="button"
+                class="question-button"
+                data-category="hairColor"
+              >
+                <span class="question-icon"> ◈ </span>
+
+                <span> HAIR COLOR </span>
+              </button>
+
+              <!-- SKIN -->
+
+              <button
+                type="button"
+                class="question-button"
+                data-category="skinTone"
+              >
+                <span class="question-icon"> ● </span>
+
+                <span> SKIN </span>
+              </button>
+
+              <!-- ACCESSORIES -->
+
+              <button
+                type="button"
+                class="question-button"
+                data-category="accessories"
+              >
+                <span class="question-icon"> ◇ </span>
+
+                <span> ACCESSORIES </span>
+              </button>
+
+              <!-- FACIAL HAIR -->
+
+              <button
+                type="button"
+                class="question-button"
+                data-category="facialHair"
+              >
+                <span class="question-icon"> ▰ </span>
+
+                <span> FACIAL HAIR </span>
+              </button>
+            </div>
+
+            <!-- QUESTION ANSWERS -->
+
+            <div id="answer-panel" class="answer-panel" hidden>
+              <div class="answer-header">
+                <span id="answer-question"> SELECT AN ANSWER </span>
+
+                <button
+                  type="button"
+                  id="close-answer-button"
+                  class="close-button"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div id="answer-options" class="answer-options">
+                <!-- Generated by JavaScript -->
+              </div>
+            </div>
+
+            <!-- GAME ACTIONS -->
+
+            <div class="game-actions">
+              <button
+                type="button"
+                id="pass-turn-button"
+                class="secondary-button"
+              >
+                PASS TURN
+              </button>
+
+              <button
+                type="button"
+                id="make-guess-button"
+                class="primary-button guess-button"
+              >
+                MAKE YOUR GUESS
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- =================================================
+             GUESS MODAL
+        ================================================== -->
+
+      <div id="guess-modal" class="modal-overlay" hidden>
+        <div class="modal-card">
+          <button type="button" id="close-guess-modal" class="modal-close">
+            ×
+          </button>
+
+          <span class="eyebrow"> FINAL GUESS </span>
+
+          <h2>WHO IS IT?</h2>
+
+          <p>Select the character you think your opponent chose.</p>
+
+          <div id="guess-options" class="guess-options">
+            <!-- Generated by JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================
+             RESULT SCREEN
+        ================================================== -->
+
+      <main id="result-screen" class="screen" hidden>
+        <section class="result-card">
+          <div id="result-symbol" class="result-symbol">✓</div>
+
+          <span id="result-eyebrow" class="eyebrow"> GAME COMPLETE </span>
+
+          <h1 id="result-title">YOU WIN</h1>
+
+          <p id="result-message">Great guess.</p>
+
+          <div id="result-character" class="result-character">
+            <!-- Generated by JavaScript -->
+          </div>
+
+          <div class="result-actions">
+            <button type="button" id="play-again-button" class="primary-button">
+              PLAY AGAIN
+            </button>
+
+            <button
+              type="button"
+              id="return-home-button"
+              class="secondary-button"
+            >
+              RETURN HOME
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <!-- =================================================
+             GLOBAL TOAST
+        ================================================== -->
+
+      <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
