@@ -42,18 +42,15 @@ import {
 //
 // ============================================================
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-
-  projectId: "YOUR_PROJECT_ID",
-
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyAGELUMNKKKe8b2wYG_XYSweSMwnA4FN60",
+  authDomain: "guess-the-person-91ed1.firebaseapp.com",
+  projectId: "guess-the-person-91ed1",
+  storageBucket: "guess-the-person-91ed1.firebasestorage.app",
+  messagingSenderId: "898776254744",
+  appId: "1:898776254744:web:6de0686393a3cb7e68b66d",
+  measurementId: "G-VBHS1L3SRG"
 };
 
 // ============================================================
