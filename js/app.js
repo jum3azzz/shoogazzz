@@ -455,7 +455,7 @@ async function handleJoinGame(event) {
   try {
     // JOIN GAME IN FIREBASE
     const gameData = await joinGame({
-      gameId: state.gameId,
+      gameCode: state.gameCode,
       playerName: state.playerName,
     });
 
