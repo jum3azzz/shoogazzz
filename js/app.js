@@ -14,9 +14,12 @@ import {
 
 import {
   initializeAnonymousAuth,
+  getPlayerId,
   createGame,
+  findGameByCode,
   joinGame,
   listenToGame,
+  deleteGame,
 } from "./firebase.js";
 
 // ============================================================
@@ -44,9 +47,15 @@ const state = {
   opponentCharacterId: null,
 
   gameStarted: false,
-
-  gameListener: null,
 };
+
+// ============================================================
+// FIREBASE CONNECTION STATE
+// ============================================================
+
+let unsubscribeGame = null;
+
+let authReadyPromise = null;
 
 // ============================================================
 // DOM ELEMENTS
@@ -144,14 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeApplication();
 });
 
-async function initializeApplication() {
-  try {
-    await initializeAnonymousAuth();
-  } catch (error) {
-    console.error("Failed to initialize Firebase authentication:", error);
-    showToast("Connection error. Please refresh the page.");
-  }
-
+function initializeApplication() {
   attachEventListeners();
 
   renderCharacterBoard();
@@ -159,6 +161,36 @@ async function initializeApplication() {
   updateRemainingCount();
 
   restorePlayerName();
+
+  ensureAuthenticated().catch((error) => {
+    console.error("Could not authenticate with Firebase:", error);
+
+    showToast("Could not connect to the game server.");
+  });
+}
+
+// ============================================================
+// AUTHENTICATION READY
+// ============================================================
+
+/**
+ * Guarantees a Firebase player ID exists before any
+ * create/join/listen call is made.
+ *
+ * Auth normally resolves almost instantly, but a player
+ * could click CREATE GAME before it does. Every entry
+ * point into Firebase awaits this first.
+ */
+function ensureAuthenticated() {
+  if (getPlayerId()) {
+    return Promise.resolve(getPlayerId());
+  }
+
+  if (!authReadyPromise) {
+    authReadyPromise = initializeAnonymousAuth().then((user) => user.uid);
+  }
+
+  return authReadyPromise;
 }
 
 // ============================================================
@@ -378,7 +410,7 @@ async function handleCreateGame() {
 
   state.gameCode = generateGameCode();
 
-  state.gameId = generateGameId();
+  const newGameId = generateGameId();
 
   state.opponentName = "";
 
@@ -386,40 +418,31 @@ async function handleCreateGame() {
 
   showWaitingScreen();
 
-  showToast("Game created. Share the code with your friend.");
-
   try {
-    // CREATE GAME IN FIREBASE
+    await ensureAuthenticated();
+
     await createGame({
-      gameId: state.gameId,
+      gameId: newGameId,
+
       gameCode: state.gameCode,
+
       playerName: state.playerName,
     });
 
-    // LISTEN FOR OPPONENT JOINING
-    state.gameListener = listenToGame(state.gameId, (gameData) => {
-      if (!gameData) return;
+    // The host's real document ID. This is the ID the
+    // host must listen on, since it is what the guest's
+    // findGameByCode() lookup will resolve to as well.
+    state.gameId = newGameId;
 
-      // Check if second player joined
-      if (gameData.status === "starting") {
-        const players = Object.values(gameData.players || {});
-        const opponent = players.find((p) => p.role === "guest");
+    showToast("Game created. Share the code with your friend.");
 
-        if (opponent) {
-          state.opponentName = opponent.name;
-          updatePlayerDisplay();
-
-          // Start the game
-          setTimeout(() => {
-            showGameScreen();
-          }, 500);
-        }
-      }
-    });
+    subscribeToGame(state.gameId);
   } catch (error) {
-    console.error("Failed to create game:", error);
-    showToast("Failed to create game: " + error.message);
-    showModeScreen();
+    console.error("Could not create game:", error);
+
+    showToast("Could not create the game. Try again.");
+
+    handleCancelGame();
   }
 }
 
@@ -444,49 +467,50 @@ async function handleJoinGame(event) {
     return;
   }
 
-  state.isHost = false;
+  elements.joinError.hidden = true;
 
-  state.gameCode = code;
-
-  state.gameId = `game_${code}`;
-
-  showToast("Game found. Joining...");
+  showToast("Looking for game...");
 
   try {
-    // JOIN GAME IN FIREBASE
-    const gameData = await joinGame({
-      gameCode: state.gameCode,
+    await ensureAuthenticated();
+
+    // Step 1: resolve the code into the host's real
+    // document ID. The code and the document ID are
+    // unrelated strings, so this lookup is required;
+    // guessing `game_${code}` targets a document that
+    // does not exist.
+    const foundGame = await findGameByCode(code);
+
+    // Step 2: join using that real ID, and capture the
+    // ID again from the response so state.gameId is
+    // never out of sync with the document we just wrote to.
+    const joinedGame = await joinGame({
+      gameId: foundGame.gameId,
+
       playerName: state.playerName,
     });
 
-    // Get host name
-    const players = Object.values(gameData.players || {});
-    const host = players.find((p) => p.role === "host");
-    if (host) {
-      state.opponentName = host.name;
-    }
+    state.isHost = false;
 
-    updatePlayerDisplay();
+    state.gameCode = code;
 
-    // LISTEN TO GAME UPDATES
-    state.gameListener = listenToGame(state.gameId, (updatedGameData) => {
-      if (!updatedGameData) return;
+    state.gameId = joinedGame.gameId || foundGame.gameId;
 
-      // Update opponent info if available
-      const players = Object.values(updatedGameData.players || {});
-      const opponent = players.find((p) => p.role === "host");
-      if (opponent) {
-        state.opponentName = opponent.name;
-        updatePlayerDisplay();
-      }
-    });
+    const hostEntry = Object.values(joinedGame.players || {}).find(
+      (player) => player.role === "host",
+    );
 
-    setTimeout(() => {
-      showGameScreen();
-    }, 600);
+    state.opponentName = hostEntry ? hostEntry.name : "Opponent";
+
+    subscribeToGame(state.gameId);
+
+    showToast("Game found. Joining...");
+
+    showGameScreen();
   } catch (error) {
-    console.error("Failed to join game:", error);
-    showJoinError(error.message);
+    console.error("Could not join game:", error);
+
+    showJoinError(error.message || "Could not join that game.");
   }
 }
 
@@ -521,6 +545,65 @@ function generateGameId() {
 }
 
 // ============================================================
+// LIVE GAME SUBSCRIPTION
+// ============================================================
+
+/**
+ * Starts listening to the game document on Firestore.
+ *
+ * This is what was missing before: neither the host nor
+ * the guest ever called listenToGame(), so no update from
+ * Firestore, correct ID or not, could reach the UI. The
+ * waiting screen had nothing watching for a change.
+ */
+function subscribeToGame(gameId) {
+  stopListeningToGame();
+
+  unsubscribeGame = listenToGame(gameId, handleGameUpdate);
+}
+
+function stopListeningToGame() {
+  if (unsubscribeGame) {
+    unsubscribeGame();
+
+    unsubscribeGame = null;
+  }
+}
+
+function handleGameUpdate(gameData) {
+  if (!gameData) {
+    showToast("The game no longer exists.");
+
+    stopListeningToGame();
+
+    return;
+  }
+
+  const players = gameData.players || {};
+
+  const playerId = getPlayerId();
+
+  const opponentEntry = Object.values(players).find(
+    (player) => player.id !== playerId,
+  );
+
+  if (opponentEntry) {
+    state.opponentName = opponentEntry.name;
+  }
+
+  const opponentHasJoined =
+    gameData.status === "starting" || gameData.status === "playing";
+
+  if (state.isHost && !state.gameStarted && opponentHasJoined) {
+    showToast(`${state.opponentName} joined the game.`);
+
+    showGameScreen();
+  }
+
+  updatePlayerDisplay();
+}
+
+// ============================================================
 // COPY GAME CODE
 // ============================================================
 
@@ -543,17 +626,24 @@ async function copyGameCode() {
 // ============================================================
 
 function handleCancelGame() {
+  const cancelledGameId = state.gameId;
+
+  const wasHost = state.isHost;
+
+  stopListeningToGame();
+
   state.gameCode = "";
   state.gameId = "";
 
   state.isHost = false;
 
-  if (state.gameListener) {
-    state.gameListener();
-    state.gameListener = null;
-  }
-
   showModeScreen();
+
+  if (wasHost && cancelledGameId) {
+    deleteGame(cancelledGameId).catch((error) => {
+      console.error("Could not delete cancelled game:", error);
+    });
+  }
 }
 
 // ============================================================
@@ -831,9 +921,7 @@ function updatePlayerDisplay() {
   }
 
   if (elements.opponentPlayerTurn) {
-    elements.opponentPlayerTurn.textContent = myTurn
-      ? "WAITING"
-      : "THEIR TURN";
+    elements.opponentPlayerTurn.textContent = myTurn ? "WAITING" : "THEIR TURN";
   }
 
   const localStatus = document.getElementById("local-player-status");
@@ -1000,11 +1088,6 @@ function resetLocalGame() {
 
   state.gameStarted = false;
 
-  if (state.gameListener) {
-    state.gameListener();
-    state.gameListener = null;
-  }
-
   renderCharacterBoard();
 
   updateRemainingCount();
@@ -1019,6 +1102,8 @@ function resetLocalGame() {
 // ============================================================
 
 function returnHome() {
+  stopListeningToGame();
+
   state.gameCode = "";
   state.gameId = "";
 
@@ -1027,11 +1112,6 @@ function returnHome() {
   state.isHost = false;
 
   state.gameStarted = false;
-
-  if (state.gameListener) {
-    state.gameListener();
-    state.gameListener = null;
-  }
 
   resetLocalGame();
 
