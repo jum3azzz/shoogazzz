@@ -22,6 +22,9 @@ import {
   onSnapshot,
   serverTimestamp,
   deleteDoc,
+  query,
+  where,
+  getDocs,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 // ============================================================
@@ -172,7 +175,7 @@ export async function createGame({ gameId, gameCode, playerName }) {
 
   await setDoc(gameRef, gameData);
 
-  console.log("Game created:", gameId);
+  console.log("Game created:", gameId, "with code:", gameCode);
 
   return gameData;
 }
@@ -182,18 +185,29 @@ export async function createGame({ gameId, gameCode, playerName }) {
 // ============================================================
 
 export async function findGameByCode(gameCode) {
-  /*
-   * We currently use the game ID generated
-   * by the frontend.
-   *
-   * For a production version, we will add a
-   * dedicated gameCodes collection so players
-   * can search directly by the six-character code.
-   */
+  try {
+    const gamesRef = collection(db, "games");
 
-  throw new Error(
-    "Game-code lookup will be connected to the gameCodes collection.",
-  );
+    const q = query(gamesRef, where("gameCode", "==", gameCode));
+
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    // Return the first matching game
+    const doc = querySnapshot.docs[0];
+
+    return {
+      gameId: doc.id,
+      ...doc.data(),
+    };
+  } catch (error) {
+    console.error("Error finding game by code:", error);
+
+    throw error;
+  }
 }
 
 // ============================================================
@@ -216,28 +230,29 @@ export async function getGame(gameId) {
 // JOIN GAME
 // ============================================================
 
-export async function joinGame({ gameId, playerName }) {
+export async function joinGame({ gameCode, playerName }) {
   const playerId = getPlayerId();
 
   if (!playerId) {
     throw new Error("Player is not authenticated.");
   }
 
-  const gameRef = getGameReference(gameId);
+  // Find the game by code
+  const gameData = await findGameByCode(gameCode);
 
-  const snapshot = await getDoc(gameRef);
-
-  if (!snapshot.exists()) {
+  if (!gameData) {
     throw new Error("Game does not exist.");
   }
 
-  const game = snapshot.data();
+  const gameId = gameData.gameId;
 
-  if (game.status !== "waiting") {
+  const gameRef = getGameReference(gameId);
+
+  if (gameData.status !== "waiting") {
     throw new Error("This game has already started.");
   }
 
-  const players = game.players || {};
+  const players = gameData.players || {};
 
   const playerIds = Object.keys(players);
 
@@ -268,7 +283,9 @@ export async function joinGame({ gameId, playerName }) {
   console.log("Joined game:", gameId);
 
   return {
-    ...game,
+    gameId,
+
+    ...gameData,
 
     players,
 
